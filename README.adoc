@@ -1,0 +1,82 @@
+= Howmework Assinment for OpenShift Container Platform Deployment
+
+Hiroyuki Kaneko <hkaneko@redhat.com>
+
+
+
+== topics
+
+Deploy OpenShift cluaster with the below ansible command.
+
+----
+$ ansible-playbook -i ./poc_hosts deploy_cluster.yaml
+----
+
+
+== Check List
+
+=== Basic and HA Requirements
+
+* [*] Ability to authenticate at the master console
+
+* [*] Registry has storage attached and working
+
+* [*] Router is configured on each infranode
+
+* [ ] PVs of different types are available for users to consume
+
+* [ ] Ability to deploy a simple app (nodejs-mongo-persistent)
+
+* [*] There are three masters working
+
+* [*] There are three etcd instances working
+
+* [*] There is a load balancer to access the masters called loadbalancer.$GUID.$DOMAIN
+
+* [*] There is a load balancer/DNS for both infranodes called *.apps.$GUID.$DOMAIN
+
+* [*] There are at least two infranodes, labeled env=infra
+
+=== Environment Configuration
+
+* [*] NetworkPolicy is configured and working with projects isolated by default (simulate Multitenancy)
+
+* [*] Aggregated logging is configured and working
+
+* [*] Metrics collection is configured and working
+
+* [*] Router and Registry Pods run on Infranodes
+
+* [ ] Metrics and Logging components run on Infranodes
+
+* [ ] Service Catalog, Template Service Broker, and Ansible Service Broker are all working
+
+=== CICD Workflow
+
+* [ ] Jenkins pod is running with a persistent volume
+
+* [ ] Jenkins deploys openshift-tasks app
+
+* [ ] Jenkins OpenShift plugin is used to create a CICD workflow
+
+* [ ] HPA is configured and working on production deployment of openshift-tasks
+
+=== Multitenancy
+
+* [ ] Multiple Clients (customers) created
+
+* [ ] Clients will be named Alpha Corp and Beta Corp (client=alpha, client=beta), and a "client=common" for unspecified customers.
+
+* [ ] Alpha Corp will have two users, Amy and Andrew
+
+* [ ] Beta Corp will have two users, Brian and Betty
+
+* [ ] Dedicated node for each Client
+
+* [ ] admissionControl plugin sets specific limits per label (client/customer)
+
+* [ ] The new project template is modified so that it includes a LimitRange
+
+* [ ] The new user template is used to create a user object with the specific label value
+
+* [ ] On-boarding new client documentation explains how to create a new client/customer
