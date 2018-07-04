@@ -4,7 +4,7 @@ openshift_deployment_type=openshift-enterprise
 ansible_ssh_user=ec2-user
 
 # If ansible_ssh_user is not root, ansible_become must be set to true
-#ansible_become=true
+ansible_become=true
 
 ## The use of NFS for OpenShift container platform
 openshift_enable_unsupported_configurations=true
@@ -20,25 +20,45 @@ openshift_master_default_subdomain=apps.fca3.example.opentlc.com
 os_sdn_network_plugin_name=redhat/openshift-ovs-multitenant
 
 ## Node selectors
+osm_default_node_selector="env=app"
 openshift_router_selector="env=infra"
 openshift_registry_selector="env=infra"
 
+### Service catalog
+openshift_hosted_infra_selector="env=infra"
+
 ### For metrics
-openshift_metrics_cassandra_nodeselector="env=infra"
-openshift_metrics_hawkular_nodeselector="env=infra"
-openshift_metrics_heapster_nodeselector="env=infra"
-openshift_prometheus_node_selector="env=infra"
+openshift_metrics_cassandra_nodeselector={'env': 'infra'}
+openshift_metrics_hawkular_nodeselector={'env': 'infra'}
+openshift_metrics_heapster_nodeselector={'env': 'infra'}
+openshift_prometheus_node_selector={'env': 'infra'}
 
 ### For logging
-openshift_logging_kibana_nodeselector="env=infra"
-openshift_logging_es_nodeselector="env=infra"
-openshift_logging_curator_nodeselector="env=infra"
+openshift_logging_kibana_nodeselector={'env': 'infra'}
+openshift_logging_es_nodeselector={'env': 'infra'}
+openshift_logging_curator_nodeselector={'env': 'infra'}
 
 #################################
 ## Configuration for components
 # htpasswd auth
 openshift_master_identity_providers=[{'name': 'htpasswd_auth', 'login': 'true', 'challenge': 'true', 'kind': 'HTPasswdPasswordIdentityProvider', 'filename': '/etc/origin/master/htpasswd'}]
-openshift_master_htpasswd_file=etc/htpasswd
+openshift_master_htpasswd_file=/root/paas-deployment-homework/etc/htpasswd
+
+# Service Catalog
+# Enable service catalog
+openshift_enable_service_catalog=true
+template_service_broker_install=true
+ansible_service_broker_install=true
+ansible_service_broker_local_registry_whitelist=['.*-apb$']
+
+# ETCD
+openshift_hosted_etcd_storage_kind=nfs
+openshift_hosted_etcd_storage_nfs_options="*(rw,root_squash,sync,no_wdelay)"
+openshift_hosted_etcd_storage_nfs_directory=/srv/nfs 
+openshift_hosted_etcd_storage_volume_name=etcd-vol2 
+openshift_hosted_etcd_storage_access_modes=["ReadWriteOnce"]
+openshift_hosted_etcd_storage_volume_size=1G
+openshift_hosted_etcd_storage_labels={'storage': 'etcd'}
 
 # Container registry
 openshift_hosted_registry_storage_kind=nfs
