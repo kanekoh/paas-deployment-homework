@@ -1,0 +1,35 @@
+---
+- name: Create ReadWriteOnce PVs 
+  openshift_raw:
+    api_version: v1
+      kind: PersistentVolume
+    metadata:
+      name: "pv00{{name}}"
+    spec:
+      capacity:
+        storage: 5Gi
+      accessModes:
+        - "ReadWriteOnce"
+      persistentVolumeReclaimPolicy: Recycle
+      nfs:
+        path: /srv/nfs
+        server: support1.fca3.internal
+  with_sequence: start=1 count=25
+
+- name: Create ReadWriteMany PVs 
+  openshift_raw:
+    api_version: v1
+      kind: PersistentVolume
+    metadata:
+      name: "pv00{{name}}"
+    spec:
+      capacity:
+        storage: 5Gi
+      accessModes:
+        - "ReadWriteMany"
+      persistentVolumeReclaimPolicy: Retain
+      nfs:
+        path: /srv/nfs
+        server: support1.fca3.internal
+  with_sequence: start=26 count=25
+
